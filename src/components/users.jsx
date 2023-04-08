@@ -24,8 +24,6 @@ const Users = () => {
         >
           {users.length > 0 ? (
             `${users.length + "" + renderPhase(users.length)} с тобой сегодня`
-          ) : users.length > 0 ? (
-            <table></table>
           ) : (
             <h2> Никто не тусанет с тобой сегодня</h2>
           )}
