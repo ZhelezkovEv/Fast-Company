@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../api";
-import QualitieList from "./qualitieList";
+import QualitieList from "../components/qualitieList";
 import { useParams, useHistory } from "react-router-dom";
 
 const Users = () => {
