@@ -1,56 +1,88 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import api from "../api";
 import QualitieList from "./qualitieList";
-import BookMark from "./bookmark";
-import PropTypes from "prop-types";
+import { useParams, useHistory } from "react-router-dom";
 
-const User = ({
-    _id,
-    name,
-    qualities,
-    profession,
-    completedMeetings,
-    rate,
-    onDelete,
-    bookmark,
-    onToggleBookmark
-}) => {
+const Users = () => {
+    const history = useHistory();
+    const { userId } = useParams();
+    const [user, setUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const allUsers = () => {
+        history.push("/users");
+    };
+    useEffect(() => {
+        api.users.getById(userId).then((data) => {
+            setUser(data);
+            setIsLoading(false);
+        });
+    }, [userId]);
+
+    if (isLoading) return <h2>Loading...</h2>;
+    if (!user) return <h2>User not found</h2>;
+
     return (
-        <tr>
-            <td>{name}</td>
-            <td>{<QualitieList qualities={qualities} />}</td>
-            <td>{profession.name}</td>
-            <td>{completedMeetings}</td>
-            <td>{rate}</td>
-            <td>
-                {
-                    <BookMark
-                        id={_id}
-                        onToggleBookmark={onToggleBookmark}
-                        status={bookmark}
-                    />
-                }
-            </td>
-            <td>
-                <button
-                    className="btn btn-danger"
-                    onClick={() => onDelete(_id)}
-                >
-                    Delete
-                </button>
-            </td>
-        </tr>
+        <div>
+            <h1>{user.name}</h1>
+            <h2>Профессия:{user.profession.name}</h2>
+            <QualitieList qualities={user.qualities} />
+            <p>Встретился, раз:{user.completedMeetings}</p>
+            <h4>Оценка: {user.rate}</h4>
+            <button
+                onClick={() => {
+                    allUsers();
+                }}
+                className="btn btn-warning"
+            >
+                Все пользователи
+            </button>
+        </div>
     );
 };
+export default Users;
 
-User.propTypes = {
-    _id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    qualities: PropTypes.array.isRequired,
-    profession: PropTypes.object.isRequired,
-    completedMeetings: PropTypes.number.isRequired,
-    rate: PropTypes.number.isRequired,
-    onDelete: PropTypes.func.isRequired,
-    bookmark: PropTypes.bool.isRequired,
-    onToggleBookmark: PropTypes.func.isRequired
-};
-export default User;
+// import React, { useEffect } from "react";
+// import PropTypes from "prop-types";
+// import { Link } from "react-router-dom";
+// import { useState } from "react";
+
+// import apiUsers from "../api/fake.api/user.api";
+
+// const User = ({ userId }) => {
+//     const [selectedUser, setSelectedUser] = useState();
+//     useEffect(() => {
+//         apiUsers.getUserById(userId).then((data) => setSelectedUser(...data));
+//     }, []);
+
+//     return (
+//         <>
+//             {selectedUser && (
+//                 <>
+//                     <h2>{selectedUser.name}</h2>
+//                     <h4>Профессия: {selectedUser.profession.name}</h4>
+//                     {selectedUser.qualities.map((item) => (
+//                         <h4
+//                             key={item._id}
+//                             className={"badge bg-" + item.color + " m-1"}
+//                         >
+//                             {item.name}
+//                         </h4>
+//                     ))}
+//                     <h5>
+//                         Completed Meetings: {selectedUser.completedMeetings}
+//                     </h5>
+//                     <h5>Rate: {selectedUser.rate}</h5>
+//                     <Link className="btn btn-secondary" to="/Users">
+//                         Back to all users
+//                     </Link>
+//                 </>
+//             )}
+//         </>
+//     );
+// };
+
+// User.propTypes = {
+//     userId: PropTypes.string.isRequired
+// };
+
+// export default User;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Pagination from "./pagination";
 import { paginate } from "../api/utils/paginate";
+import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import api from "../api";
 import GroupList from "./groupList";
@@ -13,7 +14,7 @@ const Users = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [profession, setProfession] = useState();
     const [selectedProf, setSelectedProf] = useState();
-    const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" });
+    const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
     const [users, setUsers] = useState();
     useEffect(() => {
         api.users.fetchAll().then((data) => setUsers(data));
@@ -27,6 +28,8 @@ const Users = () => {
     const handleDelete = (userId) => {
         setUsers(users.filter((user) => user._id !== userId));
     };
+    const params = useParams();
+    const { userId } = params;
     const handleToggleBookMark = (id) => {
         setUsers((prev) =>
             prev.map((user) =>
@@ -64,46 +67,63 @@ const Users = () => {
         const clearFilter = () => {
             setSelectedProf();
         };
+
         return (
-            <div className="d-flex">
-                {profession && (
-                    <div className="div d-flex flex-column flex-shrink-0 p-3">
-                        <GroupList
-                            selectedItem={selectedProf}
-                            items={profession}
-                            onItemSelect={handleProfessoinSelect}
-                        />
-                        <button
-                            className="btn btn-secondary mt-2"
-                            onClick={clearFilter}
-                        >
-                            Очистить
-                        </button>
+            <>
+                {userId ? (
+                    <Users {...{ userId }} />
+                ) : (
+                    <div className="main-table">
+                        <div className="filter">
+                            <div className="d-flex">
+                                {profession && (
+                                    <div className="div d-flex flex-column flex-shrink-0 p-3">
+                                        <GroupList
+                                            selectedItem={selectedProf}
+                                            items={profession}
+                                            onItemSelect={
+                                                handleProfessoinSelect
+                                            }
+                                        />
+                                        <button
+                                            className="btn btn-secondary mt-2"
+                                            onClick={clearFilter}
+                                        >
+                                            Очистить
+                                        </button>
+                                    </div>
+                                )}
+                                <div className="d-flex flex-column">
+                                    <SearchStatus userCount={count} />
+                                    {count > 0 && (
+                                        <>
+                                            <UsersTable
+                                                users={userCrop}
+                                                onSort={handleSort}
+                                                selectedSort={sortBy}
+                                                onDelete={handleDelete}
+                                                onToggleBookmark={
+                                                    handleToggleBookMark
+                                                }
+                                            />
+                                            <div className="d-flex justify-content-center">
+                                                <Pagination
+                                                    itemsCount={count}
+                                                    pageSize={pageSize}
+                                                    currentPage={currentPage}
+                                                    onPageChange={
+                                                        handlePageChange
+                                                    }
+                                                />
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 )}
-                <div className="d-flex flex-column">
-                    <SearchStatus userCount={count} />
-                    {count > 0 && (
-                        <>
-                            <UsersTable
-                                users={userCrop}
-                                onSort={handleSort}
-                                selectedSort={sortBy}
-                                onDelete={handleDelete}
-                                onToggleBookmark={handleToggleBookMark}
-                            />
-                            <div className="d-flex justify-content-center">
-                                <Pagination
-                                    itemsCount={count}
-                                    pageSize={pageSize}
-                                    currentPage={currentPage}
-                                    onPageChange={handlePageChange}
-                                />
-                            </div>
-                        </>
-                    )}
-                </div>
-            </div>
+            </>
         );
     }
     return "Loading...";
