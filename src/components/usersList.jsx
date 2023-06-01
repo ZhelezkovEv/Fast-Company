@@ -69,9 +69,10 @@ const UsersList = () => {
               )
             : filteredUsers;
 
-        const count = searchUsers.length;
+        const count = filteredUsers.length;
         const sortedUsers = _.orderBy(
             searchUsers,
+            filteredUsers,
             [sortBy.path],
             [sortBy.order]
         );
