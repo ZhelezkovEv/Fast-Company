@@ -7,6 +7,7 @@ import MultiSelectField from "../../common/form/multiSelectField";
 import PropTypes from "prop-types";
 import RadioField from "../../common/form/radioField";
 import { useHistory } from "react-router-dom";
+import BackHistoryButton from "../../common/backButton";
 
 const EditUserPage = ({ userId }) => {
     const [data, setData] = useState({});
@@ -129,6 +130,7 @@ const EditUserPage = ({ userId }) => {
         data.map((el) => ({ value: el._id, label: el.name }));
     return (
         <div className="container mt-5">
+            <BackHistoryButton />
             <div className="row">
                 <div className="col-md-6 offset-md-3 shadow p-4">
                     {!loading && (
