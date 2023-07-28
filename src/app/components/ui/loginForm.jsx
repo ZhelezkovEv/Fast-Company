@@ -3,6 +3,7 @@ import { validator } from "../../utils/validator";
 import TextField from "../common/form/textField";
 import CheckBoxField from "../common/form/checkBoxField";
 import { useAuth } from "../../hooks/useAuth";
+import { useHistory } from "react-router-dom";
 
 const LoginForm = () => {
     const [data, setData] = useState({
@@ -10,37 +11,27 @@ const LoginForm = () => {
         password: "",
         stayOn: false
     });
-    const [enterError, setEnterError] = useState(null);
-    const [errors, setErrors] = useState({});
+    const history = useHistory();
     const { logIn } = useAuth();
+    const [errors, setErrors] = useState({});
+    const [enterError, setEnterError] = useState(null);
     const handleChange = (target) => {
         setData((prevState) => ({
             ...prevState,
             [target.name]: target.value
         }));
+        setEnterError(null);
     };
+
     const validatorConfig = {
         email: {
             isRequired: {
                 message: "Электронная почта обязательна для заполнения"
-            },
-            isEmail: {
-                message: "Email введен некорректно"
             }
         },
         password: {
             isRequired: {
                 message: "Пароль обязателен для заполнения"
-            },
-            isCapitalSymbol: {
-                message: "Пароль должен содержать хотя бы одну заглавную букву"
-            },
-            isContainDigit: {
-                message: "Пароль должен содержать хотя бы одно число"
-            },
-            min: {
-                message: "Пароль должен состоять минимум из 8 символов",
-                value: 8
             }
         }
     };
@@ -88,7 +79,6 @@ const LoginForm = () => {
                 onChange={handleChange}
                 error={errors.password}
             />
-
             <CheckBoxField
                 value={data.stayOn}
                 onChange={handleChange}
