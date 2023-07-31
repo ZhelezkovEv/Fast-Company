@@ -23,15 +23,9 @@ const RegisterForm = () => {
     });
     const { signUp } = useAuth();
     const { qualities } = useQualities();
-    const qualitiesList = qualities.map((q) => ({
-        label: q.name,
-        value: q._id
-    }));
+
     const { professions } = useProfessions();
-    const professionsList = professions.map((p) => ({
-        label: p.name,
-        value: p._id
-    }));
+
     const [errors, setErrors] = useState({});
 
     const handleChange = (target) => {
@@ -139,7 +133,7 @@ const RegisterForm = () => {
             <SelectField
                 label="Выбери свою профессию"
                 defaultOption="Choose..."
-                options={professionsList}
+                options={professions}
                 name="profession"
                 onChange={handleChange}
                 value={data.profession}
@@ -157,7 +151,7 @@ const RegisterForm = () => {
                 label="Выберите ваш пол"
             />
             <MultiSelectField
-                options={qualitiesList}
+                options={qualities}
                 onChange={handleChange}
                 defaultValue={data.qualities}
                 name="qualities"

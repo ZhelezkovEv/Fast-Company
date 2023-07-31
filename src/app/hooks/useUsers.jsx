@@ -39,8 +39,17 @@ const UserProvider = ({ children }) => {
     function getUserById(userId) {
         return users.find((u) => u._id === userId);
     }
+    async function upDate(data) {
+        const { content } = await userService.update(data);
+        setUsers((prevState) =>
+            prevState.map((user) =>
+                user._id === content._id ? { ...user, ...content } : user
+            )
+        );
+        return content;
+    }
     return (
-        <UserContext.Provider value={{ users, getUserById }}>
+        <UserContext.Provider value={{ users, getUserById, upDate }}>
             {!isLoading ? children : "Loading..."}
         </UserContext.Provider>
     );
