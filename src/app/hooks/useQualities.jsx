@@ -41,20 +41,12 @@ export const QualitiesProvider = ({ children }) => {
         }
     }, [error]);
 
-    const getQualitiesByIds = (ids) => {
-        console.log(
-            ids?.map((id) => qualities.find((qual) => qual._id === id))
-        );
-        return ids?.map((id) => qualities.find((qual) => qual._id === id));
-    };
-
     return (
         <QualitiesContext.Provider
             value={{
                 qualities,
                 getQuality,
-                isLoading,
-                getQualitiesByIds
+                isLoading
             }}
         >
             {children}
